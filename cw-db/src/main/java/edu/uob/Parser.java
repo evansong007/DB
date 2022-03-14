@@ -1,47 +1,62 @@
 package edu.uob;
 
+import DBCommands.*;
 import DBExceptions.*;
 
 
 public class Parser {
+    DBcmd processingCentre;
+    Tokenizer query;
 
-
-    public Parser(String command)throws QueryException {
-        if(command.isEmpty()) throw new QueryIsEmptyException();
-        Tokenizer query = new Tokenizer(command);
+    public DBcmd parseQuery(String command) throws QueryException {
+        if (command.isEmpty()) throw new QueryIsEmptyException();
+        query = new Tokenizer(command);
         String token = query.getFirstToken().toUpperCase();
-        switch (token){
-            case "USE":{
+        switch (token) {
+            case "USE": {
+                processingCentre = new UseCMD();
                 break;
             }
-            case "CREATE":{
+            case "CREATE": {
+                processingCentre = new CreateCMD();
                 break;
             }
-            case "DROP":{
+            case "DROP": {
+                processingCentre = new DropCMD();
                 break;
             }
-            case "ALTER":{
+            case "ALTER": {
+                processingCentre = new AlterCMD();
                 break;
             }
-            case "INSERT":{
+            case "INSERT": {
+                processingCentre = new InsertCMD();
                 break;
             }
-            case "SELECT":{
+            case "SELECT": {
+                processingCentre = new SelectCMD();
                 break;
             }
-            case "UPDATE":{
+            case "UPDATE": {
+                processingCentre = new UpdateCMD();
                 break;
             }
-            case "DELETE":{
+            case "DELETE": {
+                processingCentre = new DeleteCMD();
                 break;
             }
-            case "JOIN":{
+            case "JOIN": {
+                processingCentre = new JoinCMD();
                 break;
             }
-            default:{
+            default: {
                 throw new InvalidCommandTypeException();
             }
         }
+        return processingCentre;
+    }
+
+    private void parseUseQuery()throws QueryException{
 
 
     }

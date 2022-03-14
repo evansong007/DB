@@ -1,5 +1,6 @@
 package edu.uob;
 
+import DBCommands.DBcmd;
 import DBExceptions.QueryException;
 
 import java.io.BufferedReader;
@@ -51,9 +52,10 @@ public final class DBServer {
     public String handleCommand(String command) {
         // TODO implement your server logic here
         try {
-            Parser parser = new Parser(command);
-
-            return "[OK] " ;
+            Parser parser = new Parser();
+            DBcmd processingCentre = parser.parseQuery(command);
+            processingCentre.executeCommand();
+            return "[OK] ";
         } catch (QueryException exception) {
             return "[ERROR] " + exception;
         }
