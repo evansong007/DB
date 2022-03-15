@@ -5,8 +5,10 @@ import DBExceptions.*;
 
 
 public class Parser {
-    DBcmd processingCentre;
-    Tokenizer query;
+    public DBcmd processingCentre;
+    private Tokenizer query;
+    private static TokenType tokenType;
+
 
     public DBcmd parseQuery(String command) throws QueryException {
         if (command.isEmpty()) throw new QueryIsEmptyException();
@@ -15,10 +17,12 @@ public class Parser {
         switch (token) {
             case "USE": {
                 processingCentre = new UseCMD();
+                parseUseQuery();
                 break;
             }
             case "CREATE": {
                 processingCentre = new CreateCMD();
+                parseCreatQuery();
                 break;
             }
             case "DROP": {
@@ -56,8 +60,15 @@ public class Parser {
         return processingCentre;
     }
 
-    private void parseUseQuery()throws QueryException{
+    private void parseUseQuery() throws QueryException {
+        String dataBase = query.getNextToken();
+        if (!tokenType.isPlainText(dataBase)) throw new InvalidPlainTextException();
+        processingCentre.setDataBase(dataBase);
+        if (!query.getNextToken().equals(";")) throw new TooManyParametersException();
 
+    }
+
+    private void parseCreatQuery() throws QueryException {
 
     }
 }

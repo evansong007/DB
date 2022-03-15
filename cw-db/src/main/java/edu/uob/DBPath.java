@@ -4,7 +4,7 @@ import java.io.File;
 
 public class DBPath {
     private final String rootPath;
-    private String currentDatabasePath;
+    private String currentDatabasePath = null;
 
     public DBPath(File databaseDirectory) {
         String databasePath = databaseDirectory.toString();
