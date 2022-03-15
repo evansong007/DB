@@ -1,11 +1,11 @@
-package DBCommands;
+package edu.uob.DBCommand;
 
 
-import DBExceptions.InvalidDataBaseNameException;
+import edu.uob.DBExceptions.InvalidDataBaseNameException;
 
 import java.io.File;
 
-public class UseCMD extends DBcmd{
+public class UseCMD extends DBcmd {
 
     @Override
     public void executeCommand()throws InvalidDataBaseNameException {

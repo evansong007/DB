@@ -11,17 +11,15 @@
 
 <CreateTable>    ::=  "CREATE TABLE " <TableName> | "CREATE TABLE " <TableName> "(" <AttributeList> ")"
 
-<Drop>           ::=  "DROP " <Structure> " " <StructureName>
-
-<Structure>      ::=  "DATABASE" | "TABLE"
+<Drop>           ::=  "DROP DATABASE " <DatabaseName> | "DROP TABLE " <TableName>
 
 <Alter>          ::=  "ALTER TABLE " <TableName> " " <AlterationType> " " <AttributeName>
 
 <Insert>         ::=  "INSERT INTO " <TableName> " VALUES(" <ValueList> ")"
 
-<Select>         ::=  "SELECT " <WildAttribList> " FROM " <TableName> | "SELECT " <WildAttribList> " FROM " <TableName> " WHERE " <Condition> 
+<Select>         ::=  "SELECT " <WildAttribList> " FROM " <TableName> | "SELECT " <WildAttribList> " FROM " <TableName> " WHERE " <Condition>
 
-<Update>         ::=  "UPDATE " <TableName> " SET " <NameValueList> " WHERE " <Condition> 
+<Update>         ::=  "UPDATE " <TableName> " SET " <NameValueList> " WHERE " <Condition>
 
 <Delete>         ::=  "DELETE FROM " <TableName> " WHERE " <Condition>
 
@@ -51,7 +49,7 @@
 
 <DigitSequence>  ::=  <Digit> | <Digit> <DigitSequence>
 
-<IntegerLiteral> ::=  <DigitSequence> | "-" <DigitSequence> | "+" <DigitSequence> 
+<IntegerLiteral> ::=  <DigitSequence> | "-" <DigitSequence> | "+" <DigitSequence>
 
 <FloatLiteral>   ::=  <DigitSequence> "." <DigitSequence> | "-" <DigitSequence> "." <DigitSequence> | "+" <DigitSequence> "." <DigitSequence>
 
@@ -65,7 +63,7 @@
 
 <TableName>      ::=  <PlainText>
 
-<ColumnName>     ::=  <PlainText>
+<AttributeName>  ::=  <PlainText>
 
 <DatabaseName>   ::=  <PlainText>
 
@@ -76,5 +74,7 @@
 <Condition>      ::=  "(" <Condition> ")AND(" <Condition> ")" | "(" <Condition> ")OR(" <Condition> ")" | <AttributeName> <Operator> <Value>
 
 <Operator>       ::=  "==" | ">" | "<" | ">=" | "<=" | "!=" | " LIKE "
+
+
 
 

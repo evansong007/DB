@@ -1,7 +1,7 @@
 package edu.uob;
 
-import DBCommands.DBcmd;
-import DBExceptions.QueryException;
+import edu.uob.DBCommand.DBcmd;
+import edu.uob.DBExceptions.QueryException;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

@@ -1,8 +1,8 @@
 package edu.uob;
 
 
-import DBExceptions.QueryException;
-import DBExceptions.QueryIsNotFinishedException;
+import edu.uob.DBExceptions.QueryException;
+import edu.uob.DBExceptions.QueryIsNotFinishedException;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -31,7 +31,13 @@ public class Tokenizer {
         return tokens.get(currentTokenIndex);
     }
 
+    public String getcurrentToken(){return tokens.get(currentTokenIndex);}
+
     public String getLastToken() {
         return tokens.get(tokens.size() - 1);
+    }
+
+    public Boolean hasMoreToken(){
+        return currentTokenIndex<tokens.size()-1;
     }
 }

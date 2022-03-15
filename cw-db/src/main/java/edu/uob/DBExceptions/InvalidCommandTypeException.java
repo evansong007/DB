@@ -1,4 +1,4 @@
-package DBExceptions;
+package edu.uob.DBExceptions;
 
 public class InvalidCommandTypeException extends QueryException {
     public InvalidCommandTypeException() {
