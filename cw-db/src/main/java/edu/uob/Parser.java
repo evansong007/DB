@@ -1,14 +1,16 @@
 package edu.uob;
 
-import DBExceptions.*;
 import edu.uob.DBCommand.*;
 import edu.uob.DBExceptions.*;
+
+import java.io.IOException;
+import java.nio.file.Paths;
 
 
 public class Parser {
     public DBcmd processingCentre;
     private Tokenizer query;
-    private static TokenType tokenType = new TokenType();
+    TokenType tokenType = new TokenType();
 
 
     public DBcmd parseQuery(String command) throws QueryException {
@@ -28,82 +30,226 @@ public class Parser {
             }
             case "DROP": {
                 processingCentre = new DropCMD();
+                parseDrop();
                 break;
             }
             case "ALTER": {
                 processingCentre = new AlterCMD();
+                parseAlter();
                 break;
             }
             case "INSERT": {
                 processingCentre = new InsertCMD();
+                parseInsert();
                 break;
             }
             case "SELECT": {
                 processingCentre = new SelectCMD();
+                parseSelect();
                 break;
             }
             case "UPDATE": {
                 processingCentre = new UpdateCMD();
+                parseUpdate();
                 break;
             }
             case "DELETE": {
                 processingCentre = new DeleteCMD();
+                parseDelete();
                 break;
             }
             case "JOIN": {
                 processingCentre = new JoinCMD();
+                parseJoin();
                 break;
             }
             default: {
-                throw new InvalidCommandTypeException();
+                throw new QueryException();
             }
         }
+        if (query.hasMoreToken()) throw new QueryException();
         return processingCentre;
     }
 
     private void parseUse() throws QueryException {
-        String dataBase = query.getNextToken();
-        if (!dataBase.matches(TokenType.PLAINTEXT)) throw new InvalidPlainTextException();
-        processingCentre.setDataBase(dataBase);
+        isTokenValid(TokenType.PLAINTEXT, query.getNextToken());
+        processingCentre.setDataBase(query.getcurrentToken());
     }
 
     private void parseCreat() throws QueryException {
         String commandType = query.getNextToken();
-        if (commandType.equals("DATABASE")) {
-            processingCentre.setCreatType(commandType);
+        if (commandType.matches(TokenType.DATABASE)) {
+            processingCentre.setCommandType("DATABASE");
             parseUse();
-            if (query.hasMoreToken()) {
-                throw new TooManyParametersException();
-            }
 
-        } else if (commandType.equals("TABLE")) {
-            processingCentre.setCreatType(commandType);
+        } else if (commandType.matches(TokenType.TABLE)) {
+            processingCentre.setCommandType("TABLE");
+            isTokenValid(TokenType.PLAINTEXT, query.getNextToken());
+            processingCentre.addTableName(query.getcurrentToken());
             if (query.hasMoreToken()) {
-                if (!query.getNextToken().equals("(")) throw new InvalidAttributeNameException();
-                if (!query.getNextToken().matches(TokenType.PLAINTEXT)) throw new InvalidAttributeNameException();
+                isTokenValid(TokenType.LEFTBRACKET, query.getNextToken());
+                isTokenValid(TokenType.PLAINTEXT, query.getNextToken());
                 processingCentre.addAttributeList(query.getcurrentToken());
                 parseAttributeList();
-                if(!query.getcurrentToken().equals(")"))throw new InvalidAttributeNameException();
-                if(query.hasMoreToken()) throw new TooManyParametersException();
+                isTokenValid(TokenType.RIGHTBRACKET, query.getcurrentToken());
             }
-        } else {
-            throw new InvalidCommandTypeException();
         }
     }
 
     public void parseAttributeList() throws QueryException {
-        while (query.getNextToken().equals(",")) {
-            if (query.getNextToken().matches(TokenType.PLAINTEXT)) {
-                processingCentre.addAttributeList(query.getcurrentToken());
-            } else {
-                throw new InvalidAttributeNameException();
+        while (query.getNextToken().matches(TokenType.APOSTROPHE)) {
+            isTokenValid(TokenType.PLAINTEXT, query.getNextToken());
+            processingCentre.addAttributeList(query.getcurrentToken());
+        }
+    }
+
+    public void parseDrop() throws QueryException {
+        String commandType = query.getNextToken();
+        if (commandType.matches(TokenType.DATABASE)) {
+            processingCentre.setCommandType("DATABASE");
+            parseUse();
+            return;
+        } else if (commandType.matches(TokenType.TABLE)) {
+            processingCentre.setCommandType("TABLE");
+            isTokenValid(TokenType.PLAINTEXT, query.getNextToken());
+            processingCentre.addTableName(query.getcurrentToken());
+            return;
+        }
+
+    }
+
+    public void parseAlter() throws QueryException {
+        isTokenValid(TokenType.TABLE, query.getNextToken());
+        isTokenValid(TokenType.PLAINTEXT, query.getNextToken());
+        processingCentre.addTableName(query.getcurrentToken());
+        isTokenValid(TokenType.AlTERATIONTYPE, query.getNextToken());
+        processingCentre.setAlterationType(query.getcurrentToken());
+        isTokenValid(TokenType.PLAINTEXT, query.getNextToken());
+        processingCentre.setAttributeName(query.getcurrentToken());
+    }
+
+    public void parseInsert() throws QueryException {
+        isTokenValid(TokenType.INTO, query.getNextToken());
+        isTokenValid(TokenType.PLAINTEXT, query.getNextToken());
+        processingCentre.addTableName(query.getcurrentToken());
+        isTokenValid(TokenType.VALUES, query.getNextToken());
+        isTokenValid(TokenType.LEFTBRACKET, query.getNextToken());
+        isValue(query.getNextToken());
+        processingCentre.addValueList(query.getcurrentToken());
+        parseValueList();
+        isTokenValid(TokenType.RIGHTBRACKET, query.getcurrentToken());
+    }
+
+    public void parseValueList() throws QueryException {
+        while (query.getNextToken().matches(TokenType.APOSTROPHE)) {
+            isValue(query.getNextToken());
+            processingCentre.addValueList(query.getcurrentToken());
+        }
+
+    }
+
+    public void isTokenValid(String tokenType, String token) throws QueryException {
+        if (!token.matches(tokenType)) throw new QueryException();
+    }
+
+    public void isValue(String token) throws QueryException {
+        if (!token.matches(TokenType.STRINGLITERAL) &&
+                !token.matches(TokenType.BOOLEANLITERAL) &&
+                !token.matches(TokenType.FLOATLITERAL) &&
+                !token.matches(TokenType.INTEGERLITERAL) &&
+                !token.matches(TokenType.NULL)) {
+            throw new QueryException();
+        }
+    }
+
+    public void parseSelect() throws QueryException {
+        if (query.getNextToken().matches(TokenType.PLAINTEXT)) {
+            processingCentre.setAttributeName(query.getcurrentToken());
+            parseAttributeList();
+            isTokenValid(TokenType.FROM, query.getcurrentToken());
+            parseUse();
+            if (query.hasMoreToken()) {
+                isTokenValid(TokenType.WHERE, query.getNextToken());
+                parseCondition();
+            }
+        } else if (query.getcurrentToken().matches("\\*")) {
+            isTokenValid(TokenType.FROM, query.getNextToken());
+            parseUse();
+            if (query.hasMoreToken()) {
+                isTokenValid(TokenType.WHERE, query.getNextToken());
+                parseCondition();
             }
         }
     }
 
-    public void parseDrop () throws QueryException{
-        if(query.getNextToken().equals("DATABASE")){
+    public void parseCondition() throws QueryException {
+        if (query.getNextToken().matches(TokenType.LEFTBRACKET)) {
+            parseCondition();
+            isTokenValid(TokenType.RIGHTBRACKET, query.getNextToken());
+            isTokenValid(TokenType.LOGICALOPREATOR, query.getNextToken());
+            String logicalOperator = query.getcurrentToken();
+            isTokenValid(TokenType.LEFTBRACKET, query.getNextToken());
+            parseCondition();
+            isTokenValid(TokenType.RIGHTBRACKET, query.getNextToken());
+            processingCentre.addConditionList(logicalOperator);
+            return;
 
+        } else if (query.getcurrentToken().matches(TokenType.PLAINTEXT)) {
+            Condition condition = new Condition();
+            condition.setAttributeName(query.getcurrentToken());
+            isTokenValid(TokenType.OPERATOR, query.getNextToken());
+            condition.setOperator(query.getcurrentToken());
+            isValue(query.getNextToken());
+            condition.setValue(query.getcurrentToken());
+            processingCentre.addConditionList(condition);
+            return;
         }
+    }
+
+    public void parseUpdate()throws QueryException{
+        isTokenValid(TokenType.PLAINTEXT, query.getNextToken());
+        processingCentre.addTableName(query.getcurrentToken());
+        isTokenValid(TokenType.SET, query.getNextToken());
+        parseNameValueList();
+        isTokenValid(TokenType.WHERE, query.getcurrentToken());
+        parseCondition();
+
+    }
+
+    public void parseNameValuePair()throws QueryException{
+        isTokenValid(TokenType.PLAINTEXT, query.getNextToken());
+        processingCentre.addAttributeList(query.getcurrentToken());
+        isTokenValid(TokenType.EQUALS, query.getNextToken());
+        isValue(query.getNextToken());
+        processingCentre.addValueList(query.getcurrentToken());
+    }
+
+    public void parseNameValueList()throws QueryException{
+        parseNameValuePair();
+        while (query.getNextToken().matches(TokenType.APOSTROPHE)){
+            parseNameValuePair();
+        }
+    }
+
+    public void parseDelete()throws QueryException{
+        isTokenValid(TokenType.FROM, query.getNextToken());
+        isTokenValid(TokenType.PLAINTEXT, query.getNextToken());
+        processingCentre.addTableName(query.getcurrentToken());
+        isTokenValid(TokenType.WHERE, query.getNextToken());
+        parseCondition();
+    }
+
+    public void parseJoin()throws QueryException{
+        isTokenValid(TokenType.PLAINTEXT, query.getNextToken());
+        processingCentre.addTableName(query.getcurrentToken());
+        isTokenValid(TokenType.AND, query.getNextToken());
+        isTokenValid(TokenType.PLAINTEXT, query.getNextToken());
+        processingCentre.addTableName(query.getcurrentToken());
+        isTokenValid(TokenType.ON, query.getNextToken());
+        isTokenValid(TokenType.PLAINTEXT, query.getNextToken());
+        processingCentre.addAttributeList(query.getcurrentToken());
+        isTokenValid(TokenType.AND, query.getNextToken());
+        isTokenValid(TokenType.PLAINTEXT, query.getNextToken());
+        processingCentre.addAttributeList(query.getcurrentToken());
     }
 }
