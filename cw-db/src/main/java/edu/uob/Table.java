@@ -1,6 +1,9 @@
 package edu.uob;
 
+import edu.uob.DBExceptions.AttributeDuplicationException;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Table {
@@ -33,7 +36,13 @@ public class Table {
         setMaxId(maxId);
     }
 
-    public void setAttributes(String attribute) {
+    public Integer getNewId(){
+
+        return ++maxId;
+    }
+
+    public void setAttributes(String attribute) throws AttributeDuplicationException {
+        if(attributes.contains(attribute))throw new AttributeDuplicationException();
         attributes.add(attribute);
     }
 
@@ -43,5 +52,36 @@ public class Table {
 
     public ArrayList<Map<String,String>> getTableData(){
         return tableData;
+    }
+
+    public void setNullToAttribute(String attributes){
+        for (Map<String,String> entity: tableData) {
+            entity.put(attributes,TokenType.NULL);
+        }
+    }
+
+    public void dropAttribute(String attribute){
+        if(!attributes.contains(attribute))return;
+        for (Map<String,String> entity: tableData) {
+            entity.remove(attribute);
+        }
+        attributes.remove(attribute);
+    }
+
+    public void insertEntity(ArrayList<String> valueList){
+        Map<String, String> entity = new HashMap<>();
+        int postion = 0;
+        for (String attribute: attributes) {
+            if(attribute.equals("id")){
+                entity.put(attribute,String.valueOf(getNewId()));
+            }else{
+                entity.put(attribute,valueList.get(postion++));
+            }
+        }
+        getTableData().add(entity);
+    }
+
+    public void addTabledata(Map<String,String> entity){
+        tableData.add(entity);
     }
 }

@@ -55,9 +55,9 @@ public final class DBServer {
             Parser parser = new Parser();
             DBcmd processingCentre = parser.parseQuery(command);
             processingCentre.setRootBase(rootBase);
-            //processingCentre.executeCommand();
-            return "[OK] ";
-        } catch (QueryException exception) {
+            processingCentre.executeCommand();
+            return "[OK] "+processingCentre.getQueryResult();
+        } catch (QueryException | IOException exception) {
             return "[ERROR] " + exception;
         }
 

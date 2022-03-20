@@ -4,14 +4,14 @@ import java.io.File;
 
 public class DBPath {
     private final String rootPath;
-    private String currentDatabasePath = null;
+    private String currentDatabasePath;
 
     public DBPath(File databaseDirectory) {
         String databasePath = databaseDirectory.toString();
         this.rootPath = databasePath.substring(0, databasePath.length() - 1);
     }
 
-    public String getDatabasePath() {
+    public String getRootPath() {
         return rootPath;
     }
 

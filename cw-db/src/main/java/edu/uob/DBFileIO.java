@@ -1,21 +1,22 @@
 package edu.uob;
 
+import edu.uob.DBExceptions.AttributeDuplicationException;
+
 import java.io.*;
 import java.util.*;
 
 
 public class DBFileIO {
-    private static final String fileType = ".tab";
     private Table table;
-    private String filepath;
+    private File filepath;
 
-    public DBFileIO(Table table, DBPath path) {
+    public DBFileIO(Table table, File path) {
         this.table = table;
-        filepath = path.getCurrentDatabasePath() + table.getTableName() + fileType;
+        this.filepath = path;
     }
 
 
-    public void tableReader() throws IOException {
+    public void tableReader() throws IOException, AttributeDuplicationException {
         BufferedReader bufferedReader = new BufferedReader(new FileReader(filepath));
         String row;
         ArrayList<String> tableContent = new ArrayList<>();
@@ -28,7 +29,7 @@ public class DBFileIO {
         bufferedReader.close();
     }
 
-    public void readAttributes(ArrayList<String> tableContent) {
+    public void readAttributes(ArrayList<String> tableContent) throws AttributeDuplicationException {
         String[] attributes = tableContent.get(0).split("\\t");
         for (String attribute : attributes) {
             table.setAttributes(attribute);
@@ -59,7 +60,6 @@ public class DBFileIO {
     }
 
     public void writeAttributes(BufferedWriter bufferedWriter) throws IOException {
-        bufferedWriter.newLine();
         ArrayList<String> attributes = table.getAttributes();
         for(String attribute:attributes){
             bufferedWriter.write(attribute+"\t");
@@ -78,4 +78,6 @@ public class DBFileIO {
             bufferedWriter.flush();
         }
     }
+
+    public Table getTable(){return table;}
 }

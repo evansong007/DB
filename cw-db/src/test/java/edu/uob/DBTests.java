@@ -30,29 +30,16 @@ final class DBTests {
     // IMPORTANT: If you do this, make sure you rerun the tests using `dbDir` again to make sure it
     // still works and keep it that way for the submission.
 
-    server = new DBServer(dbDir);
+
+    server = new DBServer(new File("C:\\Users\\songe\\Documents\\resources\\."));
   }
 
   // Here's a basic test for spawning a new server and sending an invalid command,
   // the spec dictates that the server respond with something that starts with `[ERROR]`
   @Test
-  void testInvalidCommandIsAnError() throws QueryException {
-    assertTrue(server.handleCommand("foo").startsWith("[ERROR]"));
-    assertTrue(server.handleCommand("CREATE DATABASE markbook;").startsWith("[OK]"));
+  void testInvalidCommandIsAnError() {
     assertTrue(server.handleCommand("USE markbook;").startsWith("[OK]"));
-    assertTrue(server.handleCommand("CREATE TABLE marks (name, mark, pass);").startsWith("[OK]"));
-    assertTrue(server.handleCommand("INSERT INTO marks VALUES ('Steve', 65, TRUE);").startsWith("[OK]"));
-    assertTrue(server.handleCommand("SELECT * FROM marks;").startsWith("[OK]"));
-    assertTrue(server.handleCommand("SELECT * FROM marks WHERE name != 'Dave';").startsWith("[OK]"));
-    assertTrue(server.handleCommand("SELECT * FROM marks WHERE pass == TRUE;").startsWith("[OK]"));
-    assertTrue(server.handleCommand("SELECT * FROM coursework;").startsWith("[OK]"));
     assertTrue(server.handleCommand("JOIN coursework AND marks ON grade AND id;").startsWith("[OK]"));
-    assertTrue(server.handleCommand("UPDATE marks SET mark = 38 WHERE name == 'Clive';").startsWith("[OK]"));
-    assertTrue(server.handleCommand("SELECT * FROM marks WHERE name == 'Clive';").startsWith("[OK]"));
-    assertTrue(server.handleCommand("SELECT * FROM marks WHERE (pass == FALSE) AND (mark > 35);").startsWith("[OK]"));
-    assertTrue(server.handleCommand("SELECT * FROM marks WHERE name LIKE 've';").startsWith("[OK]"));
-    assertTrue(server.handleCommand("select * from ward where(name==1)and((code==2)or(parent<=2));").startsWith("[OK]"));
-    assertTrue(server.handleCommand("select * from ward where((code==2)or(parent<=2))and(name==1);").startsWith("[OK]"));
   }
 
   // Add more unit tests or integration tests here.
