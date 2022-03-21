@@ -16,5 +16,6 @@ public class InsertCMD extends DBcmd {
         fileIO.tableReader();
         table.insertEntity(valueList);
         fileIO.tableWriter();
+        this.queryResult = "query successful";
     }
 }

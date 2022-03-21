@@ -26,6 +26,7 @@ public class AlterCMD extends DBcmd {
             }
         }
         fileIO.tableWriter();
+        this.queryResult = "query successful";
     }
 
 }

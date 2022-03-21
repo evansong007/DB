@@ -28,8 +28,7 @@ public class JoinCMD extends DBcmd {
         this.attribute2 = attributeList.get(1);
         getJoinAttributes();
         joinData();
-        returnResult();
-
+        returnResult(joinTable);
     }
 
     public void getJoinAttributes() throws AttributeNotExistsException, AttributeDuplicationException {
@@ -67,6 +66,7 @@ public class JoinCMD extends DBcmd {
             if(attribute.equals("id")){
                 entity.put(attribute,String.valueOf(joinTable.getNewId()));
             }else {
+                //TODO
                 if(entity1.containsKey(attribute)){
                     entity.put(attribute,entity1.get(attribute));
                 }else {
@@ -77,25 +77,5 @@ public class JoinCMD extends DBcmd {
         joinTable.addTabledata(entity);
     }
 
-    public void returnResult() {
-        StringBuilder attributes = new StringBuilder();
-        attributes.append("\n");
-        for (String attribute : joinTable.getAttributes()) {
-            attributes.append(attribute);
-            attributes.append("\t");
-        }
 
-        StringBuilder data = new StringBuilder();
-        for (Map<String, String> entity : joinTable.getTableData()) {
-            StringBuilder row = new StringBuilder();
-            for (String attribute : joinTable.getAttributes()) {
-                row.append(entity.get(attribute));
-                row.append("\t");
-            }
-            data.append(row);
-            data.append("\n");
-        }
-
-        queryResult =  attributes + "\n" +data;
-    }
 }

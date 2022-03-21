@@ -84,4 +84,12 @@ public class Table {
     public void addTabledata(Map<String,String> entity){
         tableData.add(entity);
     }
+
+    public void copyAttributes(ArrayList<String> attributes){
+        this.attributes = attributes;
+    }
+
+    public void copyTableData(ArrayList<Map<String,String>> data){
+        this.tableData = data;
+    }
 }

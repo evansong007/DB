@@ -13,5 +13,6 @@ public class UseCMD extends DBcmd {
         File dataBase = getBasePath(baseName);
         if(!dataBase.exists()||!dataBase.isDirectory())throw new FileNotFoundException();
         rootBase.setCurrentDatabasePath(baseName);
+        this.queryResult = "query successful";
     }
 }

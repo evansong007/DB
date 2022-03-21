@@ -13,6 +13,7 @@ public class DropCMD extends DBcmd {
             File table = getTablePath(tableNames.get(0));
             if(table.exists())table.delete();
         }
+        this.queryResult = "query successful";
     }
 }
 

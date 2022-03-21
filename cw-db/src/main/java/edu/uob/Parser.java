@@ -167,14 +167,16 @@ public class Parser {
             processingCentre.addValueList(query.getcurrentToken());
             parseAttributeList();
             isTokenValid(TokenType.FROM, query.getcurrentToken());
-            parseUse();
+            isTokenValid(TokenType.PLAINTEXT, query.getNextToken());
+            processingCentre.addTableName(query.getcurrentToken());
             if (query.hasMoreToken()) {
                 isTokenValid(TokenType.WHERE, query.getNextToken());
                 parseCondition();
             }
         } else if (query.getcurrentToken().matches("\\*")) {
             isTokenValid(TokenType.FROM, query.getNextToken());
-            parseUse();
+            isTokenValid(TokenType.PLAINTEXT, query.getNextToken());
+            processingCentre.addTableName(query.getcurrentToken());
             if (query.hasMoreToken()) {
                 isTokenValid(TokenType.WHERE, query.getNextToken());
                 parseCondition();

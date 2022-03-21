@@ -25,4 +25,6 @@ public class TokenType {
     public static final String EQUALS = "\\=";
     public static final String AND = "(?i)(AND)";
     public static final String ON = "(?i)(ON)";
+
+
 }

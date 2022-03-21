@@ -32,5 +32,6 @@ public class CreateCMD extends DBcmd {
                 fileIO.tableWriter();
             }
         }
+        this.queryResult = "query successful";
     }
 }

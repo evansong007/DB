@@ -39,7 +39,7 @@ final class DBTests {
   @Test
   void testInvalidCommandIsAnError() {
     assertTrue(server.handleCommand("USE markbook;").startsWith("[OK]"));
-    assertTrue(server.handleCommand("JOIN coursework AND marks ON grade AND id;").startsWith("[OK]"));
+    assertTrue(server.handleCommand("SELECT * FROM marks;").startsWith("[OK]"));
   }
 
   // Add more unit tests or integration tests here.
