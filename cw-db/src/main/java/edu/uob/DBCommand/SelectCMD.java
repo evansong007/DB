@@ -23,6 +23,7 @@ public class SelectCMD extends DBcmd {
             targetTable.copyAttributes(fileIO.getTable().getAttributes());
             for (Map<String, String> entity : fileIO.getTable().getTableData()) {
                 if(checkConditionList(entity))targetTable.addTabledata(entity);
+                returnResult(targetTable);
             }
         }else {
             targetTable.copyAttributes(attributeList);

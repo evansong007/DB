@@ -19,4 +19,5 @@ public class DeleteCMD extends DBcmd {
         fileIO.tableWriter();
         this.queryResult = "query successful";
     }
+
 }

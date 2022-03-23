@@ -60,7 +60,7 @@ public class Tokenizer {
 
     private void optimiseCommands() {
         setStringLiterals();
-        command = command.replaceAll("('([^']*?)')", " value ");
+        command = command.replaceAll("('([^']*?)')", "value");
         command = command.replaceAll(OPERATOR," $0 ");
         command = command.replaceAll(SINGLEQUAL, " $0 ");
         command = command.replaceAll("[,;()']"," $0 ");

@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class Table {
     private final String tableName;
-    private Integer maxId;
+    private Integer maxId = 0;
     private ArrayList<String> attributes;
     private ArrayList<Map<String,String>> tableData;
 
@@ -29,15 +29,7 @@ public class Table {
         return maxId;
     }
 
-    public void updateMaxId(String id){
-        Integer maxId = getMaxId();
-        Integer currentId = Integer.parseInt(id);
-        maxId = maxId > currentId ? maxId : currentId;
-        setMaxId(maxId);
-    }
-
     public Integer getNewId(){
-
         return ++maxId;
     }
 
@@ -56,7 +48,7 @@ public class Table {
 
     public void setNullToAttribute(String attributes){
         for (Map<String,String> entity: tableData) {
-            entity.put(attributes,TokenType.NULL);
+            entity.put(attributes,"NULL");
         }
     }
 

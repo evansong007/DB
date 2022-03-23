@@ -30,10 +30,12 @@ public class DBFileIO {
     }
 
     public void readAttributes(ArrayList<String> tableContent) throws AttributeDuplicationException {
-        String[] attributes = tableContent.get(0).split("\\t");
+        table.setMaxId(Integer.parseInt(tableContent.get(0)));
+        String[] attributes = tableContent.get(1).split("\\t");
         for (String attribute : attributes) {
             table.setAttributes(attribute);
         }
+        tableContent.remove(0);
         tableContent.remove(0);
         readData(tableContent);
     }
@@ -44,9 +46,6 @@ public class DBFileIO {
             String[] row = rowData.split("\\t");
             Map<String, String> entity = new HashMap<>();
             for (int columnNumber = 0; columnNumber < row.length; columnNumber++) {
-                if (attributes.get(columnNumber).equals("id")) {
-                    table.updateMaxId(row[columnNumber]);
-                }
                 entity.put(attributes.get(columnNumber), row[columnNumber]);
             }
             table.getTableData().add(entity);
@@ -55,6 +54,8 @@ public class DBFileIO {
 
     public void tableWriter() throws IOException {
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filepath));
+        bufferedWriter.write(String.valueOf(table.getMaxId())+"\n");
+        bufferedWriter.flush();
         writeAttributes(bufferedWriter);
         bufferedWriter.close();
     }

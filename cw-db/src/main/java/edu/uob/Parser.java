@@ -125,7 +125,7 @@ public class Parser {
         isTokenValid(TokenType.AlTERATIONTYPE, query.getNextToken());
         processingCentre.setAlterationType(query.getcurrentToken());
         isTokenValid(TokenType.PLAINTEXT, query.getNextToken());
-        processingCentre.addValueList(query.getcurrentToken());
+        processingCentre.addAttributeList(query.getcurrentToken());
     }
 
     public void parseInsert() throws QueryException {
@@ -153,18 +153,18 @@ public class Parser {
     }
 
     public void isValue(String token) throws QueryException {
-        if (!token.matches(TokenType.STRINGLITERAL) &&
+        if (!token.matches(TokenType.NULL) &&
                 !token.matches(TokenType.BOOLEANLITERAL) &&
                 !token.matches(TokenType.FLOATLITERAL) &&
                 !token.matches(TokenType.INTEGERLITERAL) &&
-                !token.matches(TokenType.NULL)) {
+                !token.matches(TokenType.STRINGLITERAL)) {
             throw new QueryException();
         }
     }
 
     public void parseSelect() throws QueryException {
         if (query.getNextToken().matches(TokenType.PLAINTEXT)) {
-            processingCentre.addValueList(query.getcurrentToken());
+            processingCentre.addAttributeList(query.getcurrentToken());
             parseAttributeList();
             isTokenValid(TokenType.FROM, query.getcurrentToken());
             isTokenValid(TokenType.PLAINTEXT, query.getNextToken());

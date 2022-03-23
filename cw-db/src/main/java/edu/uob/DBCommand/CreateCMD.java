@@ -24,6 +24,7 @@ public class CreateCMD extends DBcmd {
             if(!tablepath.createNewFile())throw new IOException();
             if(!attributeList.isEmpty()){
                 Table table = new Table(tableNames.get(0));
+                table.setMaxId(0);
                 table.setAttributes("id");
                 for (String attribute: attributeList) {
                     table.setAttributes(attribute);

@@ -38,15 +38,20 @@ public class JoinCMD extends DBcmd {
         ArrayList<String> attributes1 = table1.getAttributes();
         ArrayList<String> attributes2 = table2.getAttributes();
         joinTable.setAttributes("id");
-        int stopPosition = attributes1.indexOf(attribute1);
-        int startPosition = attributes2.indexOf(attribute2) + 1;
-        for (int n = 0; n < stopPosition; n++) {
-            if(!attributes1.get(n).equals("id")){
-                joinTable.setAttributes(attributes1.get(n));
-            }
+        attributes1.remove("id");
+        attributes1.remove(attribute1);
+        attributes2.remove("id");
+        attributes2.remove(attribute2);
+        for (String attribute: attributes1) {
+            joinTable.setAttributes(attribute);
         }
-        for (int n = startPosition; n < attributes2.size(); n++) {
-            joinTable.setAttributes(attributes2.get(n));
+        for (String attribute: attributes2) {
+            if(joinTable.getAttributes().contains(attribute)){
+                joinTable.setAttributes(attribute+"*");
+            }else {
+                joinTable.setAttributes(attribute);
+            }
+
         }
     }
 
@@ -66,11 +71,12 @@ public class JoinCMD extends DBcmd {
             if(attribute.equals("id")){
                 entity.put(attribute,String.valueOf(joinTable.getNewId()));
             }else {
-                //TODO
                 if(entity1.containsKey(attribute)){
                     entity.put(attribute,entity1.get(attribute));
-                }else {
+                }else if(entity2.containsKey(attribute)){
                     entity.put(attribute,entity2.get(attribute));
+                }else {
+                    entity.put(attribute,entity2.get(attribute.replace("*","")));
                 }
             }
         }
